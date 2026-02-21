@@ -28,12 +28,20 @@ export async function POST(request: Request) {
         const successUrl = `${baseUrl}profile?session_id={CHECKOUT_SESSION_ID}`
         const cancelUrl = `${baseUrl}#pricing`
 
+        // Check if we already have a Stripe customer mapped for this user
+        const { data: customerData } = await supabase
+            .from('customers')
+            .select('stripe_customer_id')
+            .eq('id', user.id)
+            .single()
+
         const sessionOptions: any = {
             priceId,
             successUrl,
             cancelUrl,
             clientReferenceId: user.id,
-            customerEmail: user.email,
+            customerEmail: customerData?.stripe_customer_id ? undefined : user.email,
+            customerId: customerData?.stripe_customer_id || undefined,
         }
 
         const session = await createCheckoutSession(sessionOptions)
