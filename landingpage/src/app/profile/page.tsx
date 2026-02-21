@@ -67,7 +67,7 @@ export default async function ProfilePage() {
                                         </div>
                                     </div>
                                     <p className="text-slate-300 mb-6">
-                                        You are currently subscribed to the Universal Subscription. You have full access to all AI features.
+                                        You are currently subscribed to Premium. You have full access to all AI features.
                                     </p>
                                     <form action="/api/portal" method="POST">
                                         <button
@@ -80,12 +80,12 @@ export default async function ProfilePage() {
                                 </div>
                             ) : (
                                 <div>
-                                    <p className="text-slate-300 mb-6">You currently do not have an active Universal Subscription. Subscribe to unlock the paid AI versions of all present and future apps.</p>
+                                    <p className="text-slate-300 mb-6">You currently do not have an active Premium subscription. Subscribe to unlock the paid AI versions of all present and future apps.</p>
                                     <Link
                                         href="/#pricing"
                                         className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 transition-colors shadow-lg shadow-violet-600/30"
                                     >
-                                        Get Universal Subscription
+                                        Get Premium
                                     </Link>
                                 </div>
                             )}

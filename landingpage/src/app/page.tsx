@@ -75,7 +75,7 @@ export default function Home() {
               <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
               <div className="flex-grow">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-2xl font-semibold text-white">Universal Subscription</h3>
+                  <h3 className="text-2xl font-semibold text-white">Premium</h3>
                   <span className="rounded-full bg-violet-500/20 px-3 py-1 text-xs font-semibold leading-5 text-violet-300 ring-1 ring-inset ring-violet-500/30">All Access</span>
                 </div>
                 <p className="text-slate-300 text-base mb-8">One subscription. Unlimited access to the premium AI versions of every app Luahana builds.</p>
