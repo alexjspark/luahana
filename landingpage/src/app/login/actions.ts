@@ -20,9 +20,10 @@ export async function signInWithGoogle() {
         return
     }
 
-    // Redirect to Supabase's Google OAuth portal
+    // Return the URL to the client instead of doing a server-side redirect
+    // This ensures cookies are properly propagated to the browser before redirection
     if (data.url) {
-        redirect(data.url)
+        return { url: data.url }
     }
 }
 
