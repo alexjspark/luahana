@@ -33,7 +33,7 @@ export async function POST(request: Request) {
             .from('customers')
             .select('stripe_customer_id')
             .eq('id', user.id)
-            .single()
+            .maybeSingle()
 
         const sessionOptions: any = {
             priceId,
