@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import { signOut } from '@/app/auth/actions'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 export default async function ProfilePage() {
     const supabase = await createClient()
 
@@ -13,9 +15,9 @@ export default async function ProfilePage() {
     }
 
     // Fetch active subscription
-    const { data: subscription } = await supabase
+    const { data: subscription, error } = await supabase
         .from('subscriptions')
-        .select('*, prices(products(name))')
+        .select('*')
         .eq('user_id', user.id)
         .in('status', ['trialing', 'active'])
         .maybeSingle()
