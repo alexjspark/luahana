@@ -29,6 +29,44 @@ export async function POST(req: Request) {
 
         const supabase = createAdminClient()
 
+        // Helper to safely parse Stripe UNIX timestamps
+        const safeDate = (timestamp: number | null | undefined) => {
+            if (!timestamp) return null;
+            try {
+                return new Date(timestamp * 1000).toISOString();
+            } catch (e) {
+                console.warn('Failed to parse date:', timestamp);
+                return null;
+            }
+        }
+
+        // Helper to fetch latest state from Stripe and upsert
+        const syncSubscription = async (subscriptionId: string, userId: string) => {
+            const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+            const subscriptionData = {
+                id: subscription.id,
+                user_id: userId,
+                metadata: subscription.metadata,
+                status: subscription.status,
+                price_id: subscription.items.data[0].price.id,
+                quantity: subscription.items.data[0].quantity,
+                cancel_at_period_end: subscription.cancel_at_period_end,
+                cancel_at: safeDate(subscription.cancel_at),
+                canceled_at: safeDate(subscription.canceled_at),
+                current_period_start: safeDate(subscription.current_period_start) || new Date().toISOString(),
+                current_period_end: safeDate(subscription.current_period_end) || new Date().toISOString(),
+                created: safeDate(subscription.created) || new Date().toISOString(),
+                ended_at: safeDate(subscription.ended_at),
+                trial_start: safeDate(subscription.trial_start),
+                trial_end: safeDate(subscription.trial_end),
+            }
+            const { error: subError } = await supabase.from('subscriptions').upsert(subscriptionData)
+            if (subError) {
+                console.error('Error upserting subscription:', subError)
+                throw new Error('Supabase subscription upsert failed')
+            }
+        }
+
         switch (event.type) {
             case 'checkout.session.completed': {
                 const session = event.data.object as Stripe.Checkout.Session
@@ -47,14 +85,21 @@ export async function POST(req: Request) {
                         console.error('Error inserting customer:', error)
                         throw new Error('Supabase customer upsert failed')
                     }
+
+                    // To prevent race conditions with "incomplete" webhooks, 
+                    // we immediately fetch and sync the verified Subscription here.
+                    if (session.mode === 'subscription' && session.subscription) {
+                        const subId = typeof session.subscription === 'string' ? session.subscription : session.subscription.id
+                        await syncSubscription(subId, userId)
+                    }
                 }
                 break
             }
             case 'customer.subscription.created':
             case 'customer.subscription.updated':
             case 'customer.subscription.deleted': {
-                const subscription = event.data.object as Stripe.Subscription
-                const customerId = subscription.customer as string
+                const eventSub = event.data.object as Stripe.Subscription
+                const customerId = eventSub.customer as string
 
                 // Get the user UUID mapped to this Stripe Customer
                 const { data: customerData, error: customerError } = await supabase
@@ -66,48 +111,12 @@ export async function POST(req: Request) {
                 if (customerError || !customerData) {
                     console.error('No customer mapping found for stripe_customer_id:', customerId)
                     // If we can't find a user, we skip syncing this subscription.
+                    // checkout.session.completed handles creating the mapping and syncing the first time.
                     break
                 }
 
-                const userId = customerData.id
-
-                // Helper to safely parse Stripe UNIX timestamps
-                const safeDate = (timestamp: number | null | undefined) => {
-                    if (!timestamp) return null;
-                    try {
-                        return new Date(timestamp * 1000).toISOString();
-                    } catch (e) {
-                        console.warn('Failed to parse date:', timestamp);
-                        return null;
-                    }
-                }
-
-                const subscriptionData = {
-                    id: subscription.id,
-                    user_id: userId,
-                    metadata: subscription.metadata,
-                    status: subscription.status,
-                    price_id: subscription.items.data[0].price.id,
-                    quantity: subscription.items.data[0].quantity,
-                    cancel_at_period_end: subscription.cancel_at_period_end,
-                    cancel_at: safeDate(subscription.cancel_at),
-                    canceled_at: safeDate(subscription.canceled_at),
-                    current_period_start: safeDate(subscription.current_period_start) || new Date().toISOString(),
-                    current_period_end: safeDate(subscription.current_period_end) || new Date().toISOString(),
-                    created: safeDate(subscription.created) || new Date().toISOString(),
-                    ended_at: safeDate(subscription.ended_at),
-                    trial_start: safeDate(subscription.trial_start),
-                    trial_end: safeDate(subscription.trial_end),
-                }
-
-                const { error: subError } = await supabase
-                    .from('subscriptions')
-                    .upsert(subscriptionData)
-
-                if (subError) {
-                    console.error('Error upserting subscription:', subError)
-                    throw new Error('Supabase subscription upsert failed')
-                }
+                // ALWAYS fetch the latest subscription state from Stripe to avoid out-of-order webhook race conditions
+                await syncSubscription(eventSub.id, customerData.id)
                 break
             }
             default:
