@@ -29,7 +29,7 @@ export default async function Home() {
       <main className="flex flex-col items-center justify-center px-6 pt-32 lg:px-8">
         <div className="mx-auto max-w-3xl text-center py-24 sm:py-32 lg:py-40">
           <div className="hidden sm:mb-8 sm:flex sm:justify-center">
-            <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-slate-300 ring-1 ring-white/20 hover:ring-white/40 transition-all duration-300">
+            <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-slate-300 ring-1 ring-white/20 hover:ring-white/40 transition-shadow duration-300">
               Announcing our latest AI companion app.{' '}
               <Link href="#" className="font-semibold text-blue-400"><span className="absolute inset-0" aria-hidden="true" />Read more <span aria-hidden="true">&rarr;</span></Link>
             </div>
@@ -44,7 +44,7 @@ export default async function Home() {
           </p>
 
           <div className="mt-10 flex items-center justify-center gap-x-6">
-            <button className="rounded-full bg-blue-600 px-8 py-3.5 text-sm font-semibold text-white shadow-xl shadow-blue-500/30 hover:bg-blue-500 hover:scale-105 transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+            <button className="rounded-full bg-blue-600 px-8 py-3.5 text-sm font-semibold text-white shadow-xl shadow-blue-500/30 hover:bg-blue-500 hover:scale-105 transition duration-300 transition-colors transition-transform focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
               View Our Apps
             </button>
             <Link href="/about" className="group text-sm font-semibold leading-6 text-white flex items-center gap-2">
