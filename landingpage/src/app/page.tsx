@@ -1,9 +1,24 @@
 import Link from 'next/link';
 import CheckoutButton from '@/components/CheckoutButton';
+import { createClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  let role = 'user'
+  if (user) {
+    const { data: customerData } = await supabase
+      .from('customers')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+    if (customerData?.role) {
+      role = customerData.role
+    }
+  }
   return (
     <div className="relative isolate min-h-screen">
       {/* Background Gradients */}
@@ -70,8 +85,31 @@ export default function Home() {
             <p className="mt-4 text-lg text-slate-400">Everything you need to boost your productivity with absolute zero hidden fees.</p>
           </div>
 
-          <div className="flex justify-center max-w-3xl mx-auto">
-            <div className="glass rounded-3xl p-8 xl:p-10 flex flex-col relative overflow-hidden bg-white/5 border border-violet-500/30 shadow-[0_0_40px_rgba(139,92,246,0.15)] transform hover:-translate-y-2 transition-transform duration-300 w-full">
+          <div className={`flex justify-center max-w-5xl mx-auto gap-8 ${role === 'admin' ? 'flex-col md:flex-row' : ''}`}>
+
+            {role === 'admin' && (
+              <div className="glass rounded-3xl p-8 xl:p-10 flex flex-col relative overflow-hidden bg-white/5 border border-emerald-500/30 shadow-[0_0_40px_rgba(16,185,129,0.15)] transform hover:-translate-y-2 transition-transform duration-300 w-full max-w-lg mx-auto">
+                <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-emerald-500 to-transparent" />
+                <div className="flex-grow">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-2xl font-semibold text-white">Admin QA Plan</h3>
+                    <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold leading-5 text-emerald-300 ring-1 ring-inset ring-emerald-500/30">Dev Access</span>
+                  </div>
+                  <p className="text-slate-300 text-base mb-8">Internal plan exclusively for truepark0@gmail.com to test production payments.</p>
+                  <div className="flex items-baseline gap-x-2 mb-10">
+                    <span className="text-5xl font-bold tracking-tight text-white">$3</span>
+                    <span className="text-base font-semibold leading-6 text-slate-400">/month</span>
+                  </div>
+                  <ul className="space-y-5 text-base text-slate-300 mb-10">
+                    <li className="flex gap-x-3"><svg className="w-6 h-6 text-emerald-400 flex-none" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" /></svg> Unlock the paid AI versions logically</li>
+                    <li className="flex gap-x-3"><svg className="w-6 h-6 text-emerald-400 flex-none" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" /></svg> Low cost for live production testing</li>
+                  </ul>
+                </div>
+                <CheckoutButton priceId={process.env.NEXT_PUBLIC_STRIPE_ADMIN_PRICE_ID || 'price_admin_dummy'} planName="universal" />
+              </div>
+            )}
+
+            <div className="glass rounded-3xl p-8 xl:p-10 flex flex-col relative overflow-hidden bg-white/5 border border-violet-500/30 shadow-[0_0_40px_rgba(139,92,246,0.15)] transform hover:-translate-y-2 transition-transform duration-300 w-full max-w-lg mx-auto">
               <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
               <div className="flex-grow">
                 <div className="flex items-center justify-between mb-4">
