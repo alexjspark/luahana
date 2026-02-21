@@ -71,6 +71,17 @@ export async function POST(req: Request) {
 
                 const userId = customerData.id
 
+                // Helper to safely parse Stripe UNIX timestamps
+                const safeDate = (timestamp: number | null | undefined) => {
+                    if (!timestamp) return null;
+                    try {
+                        return new Date(timestamp * 1000).toISOString();
+                    } catch (e) {
+                        console.warn('Failed to parse date:', timestamp);
+                        return null;
+                    }
+                }
+
                 const subscriptionData = {
                     id: subscription.id,
                     user_id: userId,
@@ -79,24 +90,14 @@ export async function POST(req: Request) {
                     price_id: subscription.items.data[0].price.id,
                     quantity: subscription.items.data[0].quantity,
                     cancel_at_period_end: subscription.cancel_at_period_end,
-                    cancel_at: subscription.cancel_at
-                        ? new Date(subscription.cancel_at * 1000).toISOString()
-                        : null,
-                    canceled_at: subscription.canceled_at
-                        ? new Date(subscription.canceled_at * 1000).toISOString()
-                        : null,
-                    current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-                    current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-                    created: new Date(subscription.created * 1000).toISOString(),
-                    ended_at: subscription.ended_at
-                        ? new Date(subscription.ended_at * 1000).toISOString()
-                        : null,
-                    trial_start: subscription.trial_start
-                        ? new Date(subscription.trial_start * 1000).toISOString()
-                        : null,
-                    trial_end: subscription.trial_end
-                        ? new Date(subscription.trial_end * 1000).toISOString()
-                        : null,
+                    cancel_at: safeDate(subscription.cancel_at),
+                    canceled_at: safeDate(subscription.canceled_at),
+                    current_period_start: safeDate(subscription.current_period_start) || new Date().toISOString(),
+                    current_period_end: safeDate(subscription.current_period_end) || new Date().toISOString(),
+                    created: safeDate(subscription.created) || new Date().toISOString(),
+                    ended_at: safeDate(subscription.ended_at),
+                    trial_start: safeDate(subscription.trial_start),
+                    trial_end: safeDate(subscription.trial_end),
                 }
 
                 const { error: subError } = await supabase
