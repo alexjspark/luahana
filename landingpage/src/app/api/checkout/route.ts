@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
         // Example Stripe Success & Cancel URLs
         const baseUrl = getURL()
-        const successUrl = `${baseUrl}dashboard?session_id={CHECKOUT_SESSION_ID}`
+        const successUrl = `${baseUrl}profile?session_id={CHECKOUT_SESSION_ID}`
         const cancelUrl = `${baseUrl}#pricing`
 
         const sessionOptions: any = {
