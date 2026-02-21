@@ -17,6 +17,11 @@ export async function POST(request: Request) {
         const supabase = await createClient()
         const { data: { user } } = await supabase.auth.getUser()
 
+        if (!user) {
+            // Secure the checkout route by forcing unauthenticated users to log in first
+            return NextResponse.json({ url: '/login' })
+        }
+
         // Example Stripe Success & Cancel URLs
         const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
         const successUrl = `${baseUrl}/dashboard?session_id={CHECKOUT_SESSION_ID}`
@@ -26,12 +31,8 @@ export async function POST(request: Request) {
             priceId,
             successUrl,
             cancelUrl,
-        }
-
-        if (user) {
-            // Attach the existing user's ID so we can wire it up via Stripe Webhooks later
-            sessionOptions.clientReferenceId = user.id
-            sessionOptions.customerEmail = user.email
+            clientReferenceId: user.id,
+            customerEmail: user.email,
         }
 
         const session = await createCheckoutSession(sessionOptions)

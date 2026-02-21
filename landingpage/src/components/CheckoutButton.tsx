@@ -2,10 +2,10 @@
 
 interface CheckoutButtonProps {
     priceId: string;
-    planName: 'basic' | 'pro';
+    planName: 'universal';
 }
 
-export default function CheckoutButton({ priceId, planName }: CheckoutButtonProps) {
+export default function CheckoutButton({ priceId }: CheckoutButtonProps) {
     const handleCheckout = async () => {
         try {
             const response = await fetch('/api/checkout', {
@@ -22,25 +22,12 @@ export default function CheckoutButton({ priceId, planName }: CheckoutButtonProp
         }
     }
 
-    const baseStyles = "w-full py-3 px-4 rounded-xl font-semibold transition-all duration-300 active:scale-[0.98]"
-
-    if (planName === 'basic') {
-        return (
-            <button
-                onClick={handleCheckout}
-                className={`${baseStyles} bg-white/5 hover:bg-white/10 text-white border border-white/10`}
-            >
-                Get basic
-            </button>
-        )
-    }
-
     return (
         <button
             onClick={handleCheckout}
-            className={`${baseStyles} bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-600/30`}
+            className="w-full py-4 px-4 rounded-xl font-bold text-lg bg-violet-600 hover:bg-violet-500 text-white shadow-[0_0_20px_rgba(139,92,246,0.5)] transition-all duration-300 hover:shadow-[0_0_30px_rgba(139,92,246,0.6)] active:scale-[0.98]"
         >
-            Get advanced
+            Subscribe Now
         </button>
     )
 }

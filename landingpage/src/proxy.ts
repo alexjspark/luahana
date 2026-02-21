@@ -1,7 +1,17 @@
-import { type NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
 export async function proxy(request: NextRequest) {
+    // Intercept OAuth redirects that fall back to the root URL instead of the callback route
+    const { searchParams, pathname } = request.nextUrl
+    const code = searchParams.get('code')
+
+    if (code && pathname === '/') {
+        const url = request.nextUrl.clone()
+        url.pathname = '/auth/callback'
+        return NextResponse.redirect(url)
+    }
+
     // update user's auth session
     return await updateSession(request)
 }
