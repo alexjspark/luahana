@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { getURL } from '@/lib/utils/url'
 
 export async function signInWithGoogle() {
     const supabase = await createClient()
@@ -9,7 +10,7 @@ export async function signInWithGoogle() {
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-            redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`,
+            redirectTo: `${getURL()}auth/callback`,
         },
     })
 

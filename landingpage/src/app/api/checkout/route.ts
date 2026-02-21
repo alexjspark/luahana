@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createCheckoutSession } from '@luahana/payments'
 import { createClient } from '@/lib/supabase/server'
+import { getURL } from '@/lib/utils/url'
 
 export async function POST(request: Request) {
     try {
@@ -23,9 +24,9 @@ export async function POST(request: Request) {
         }
 
         // Example Stripe Success & Cancel URLs
-        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-        const successUrl = `${baseUrl}/dashboard?session_id={CHECKOUT_SESSION_ID}`
-        const cancelUrl = `${baseUrl}/#pricing`
+        const baseUrl = getURL()
+        const successUrl = `${baseUrl}dashboard?session_id={CHECKOUT_SESSION_ID}`
+        const cancelUrl = `${baseUrl}#pricing`
 
         const sessionOptions: any = {
             priceId,
