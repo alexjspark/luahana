@@ -1,6 +1,7 @@
 'use client'
 
-import { signInWithGoogle } from './actions'
+import { createClient } from '@/lib/supabase/client'
+import { getURL } from '@/lib/utils/url'
 import Link from 'next/link'
 
 export default function LoginPage() {
@@ -28,10 +29,13 @@ export default function LoginPage() {
                 <div className="relative z-10 flex flex-col gap-4">
                     <button
                         onClick={async () => {
-                            const res = await signInWithGoogle()
-                            if (res?.url) {
-                                window.location.href = res.url
-                            }
+                            const supabase = createClient()
+                            await supabase.auth.signInWithOAuth({
+                                provider: 'google',
+                                options: {
+                                    redirectTo: `${getURL()}auth/callback`,
+                                },
+                            })
                         }}
                         className="w-full flex items-center justify-center gap-3 px-6 py-3.5 bg-white text-slate-900 rounded-xl font-medium hover:bg-slate-100 transition-all active:scale-[0.98] shadow-md border border-slate-200 shadow-slate-900/10"
                     >
