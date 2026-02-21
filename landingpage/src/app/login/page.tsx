@@ -1,7 +1,6 @@
 'use client'
 
 import { createClient } from '@/lib/supabase/client'
-import { getURL } from '@/lib/utils/url'
 import Link from 'next/link'
 
 export default function LoginPage() {
@@ -33,7 +32,7 @@ export default function LoginPage() {
                             await supabase.auth.signInWithOAuth({
                                 provider: 'google',
                                 options: {
-                                    redirectTo: `${getURL()}auth/callback`,
+                                    redirectTo: `${window.location.origin}/auth/callback`,
                                 },
                             })
                         }}
