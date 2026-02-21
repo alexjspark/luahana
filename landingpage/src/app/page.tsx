@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import CheckoutButton from '@/components/CheckoutButton';
 
 export default function Home() {
   return (
@@ -57,6 +58,57 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-bold text-white mb-3">Privacy First</h3>
             <p className="text-slate-400">Your data is yours. We implement industry-leading standards to ensure conversations with AI stay private.</p>
+          </div>
+        </div>
+
+        {/* Pricing Section */}
+        <div id="pricing" className="w-full max-w-5xl mx-auto py-24 sm:py-32">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Transparent, <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">simple pricing</span></h2>
+            <p className="mt-4 text-lg text-slate-400">Everything you need to boost your productivity with absolute zero hidden fees.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Basic Plan */}
+            <div className="glass rounded-3xl p-8 xl:p-10 flex flex-col justify-between relative overflow-hidden group">
+              <div>
+                <h3 className="text-xl font-semibold text-white mb-2">Basic</h3>
+                <p className="text-slate-400 text-sm mb-6">Perfect for individual creators just getting started.</p>
+                <div className="flex items-baseline gap-x-2 mb-8">
+                  <span className="text-4xl font-bold tracking-tight text-white">$15</span>
+                  <span className="text-sm font-semibold leading-6 text-slate-400">/month</span>
+                </div>
+                <ul className="space-y-4 text-sm text-slate-300 mb-8">
+                  <li className="flex gap-x-3"><svg className="w-5 h-5 text-blue-400 flex-none" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" /></svg> 1,000 AI interactions per month</li>
+                  <li className="flex gap-x-3"><svg className="w-5 h-5 text-blue-400 flex-none" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" /></svg> Standard response speeds</li>
+                  <li className="flex gap-x-3"><svg className="w-5 h-5 text-blue-400 flex-none" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" /></svg> Community support</li>
+                </ul>
+              </div>
+              <CheckoutButton priceId={process.env.NEXT_PUBLIC_STRIPE_BASIC_PRICE_ID || 'price_basic_dummy'} planName="basic" />
+            </div>
+
+            {/* Pro Plan */}
+            <div className="glass rounded-3xl p-8 xl:p-10 flex flex-col justify-between relative overflow-hidden bg-white/5 border border-violet-500/30 shadow-[0_0_40px_rgba(139,92,246,0.15)] transform md:-translate-y-4">
+              <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xl font-semibold text-white">Pro</h3>
+                  <span className="rounded-full bg-violet-500/20 px-2.5 py-1 text-xs font-semibold leading-5 text-violet-300 ring-1 ring-inset ring-violet-500/30">Most popular</span>
+                </div>
+                <p className="text-slate-400 text-sm mb-6">For power users who need the absolute best performance.</p>
+                <div className="flex items-baseline gap-x-2 mb-8">
+                  <span className="text-4xl font-bold tracking-tight text-white">$45</span>
+                  <span className="text-sm font-semibold leading-6 text-slate-400">/month</span>
+                </div>
+                <ul className="space-y-4 text-sm text-slate-300 mb-8">
+                  <li className="flex gap-x-3"><svg className="w-5 h-5 text-violet-400 flex-none" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" /></svg> Unlimited AI interactions</li>
+                  <li className="flex gap-x-3"><svg className="w-5 h-5 text-violet-400 flex-none" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" /></svg> Priority <span className="text-violet-300 font-medium">Turbo</span> response speeds</li>
+                  <li className="flex gap-x-3"><svg className="w-5 h-5 text-violet-400 flex-none" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" /></svg> Access to experimental models</li>
+                  <li className="flex gap-x-3"><svg className="w-5 h-5 text-violet-400 flex-none" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" /></svg> 24/7 dedicated support</li>
+                </ul>
+              </div>
+              <CheckoutButton priceId={process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || 'price_pro_dummy'} planName="pro" />
+            </div>
           </div>
         </div>
 
