@@ -2,6 +2,7 @@
     "name": "luahana-monorepo",
     "private": true,
     "workspaces": [
-        "landingpage"
+        "landingpage",
+        "packages/*"
     ]
 }
